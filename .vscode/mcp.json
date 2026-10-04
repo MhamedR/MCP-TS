@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "hello-mcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/Users/mhamedradhouane/Documents/github-pro/MCP-TS/dist/server.js"]
+    }
+  }
+}
