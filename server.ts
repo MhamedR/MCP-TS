@@ -1,5 +1,6 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
+import {readdir} from 'node:fs/promises';
 import {z} from 'zod';
 
 const server = new McpServer({
@@ -22,6 +23,35 @@ server.registerTool(
         {
           type: 'text',
           text: `Hello, ${name}!`,
+        },
+      ],
+    };
+  },
+);
+
+server.registerTool(
+  'list_files',
+  {
+    title: 'List Files',
+    description: 'List files in a directory',
+    inputSchema: {
+      path: z.string().optional().default('.').describe('Directory to list'),
+    },
+  },
+  async ({path: directory}) => {
+    const files = await readdir(directory, {
+      withFileTypes: true,
+    });
+
+    const result = files.map((file) => {
+      return file.isDirectory() ? `${file.name}/` : file.name;
+    });
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: result.join('\n'),
         },
       ],
     };
